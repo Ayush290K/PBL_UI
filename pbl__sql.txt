@@ -1,0 +1,166 @@
+-- Script to create User Information table
+-- Script to create User Information table in MySQL
+
+CREATE TABLE Users (
+    UserId INT PRIMARY KEY,
+    UserName VARCHAR(50) NOT NULL,
+    Age INT,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    Address VARCHAR(255),
+    ContactNumber VARCHAR(15) UNIQUE
+);
+
+-- End of script
+-- Script to insert 5 records into Users table
+
+INSERT INTO Users (UserId, UserName, Age, Email, Password, Address, ContactNumber) VALUES
+(1, 'John Doe', 28, 'johndoe@example.com', 'password123', '123 Elm St, Springfield', '123-456-7890'),
+(2, 'Jane Smith', 35, 'janesmith@example.com', 'securePass!', '456 Oak St, Springfield', '098-765-4321'),
+(3, 'Alice Johnson', 22, 'alicej@example.com', 'aliceSecret', '789 Pine St, Springfield', '111-222-3333'),
+(4, 'Bob Brown', 40, 'bobbrown@example.com', 'bobPassWord', '321 Maple St, Springfield', '444-555-6666'),
+(5, 'Carol White', 30, 'carolw@example.com', 'carolPwd321', '654 Birch St, Springfield', '777-888-9999');
+
+-- End of script
+
+-- End of script
+-- Script to create Service Booking Status table
+-- Script to create Service Booking Status table
+
+CREATE TABLE ServiceBookingStatus (
+    StatusId INT AUTO_INCREMENT PRIMARY KEY,
+    StatusName VARCHAR(50) NOT NULL
+);
+
+-- Inserting master data into Service Booking Status table
+INSERT INTO ServiceBookingStatus (StatusName) VALUES 
+('Pending'),
+('Confirmed'),
+('In Progress'),
+('Completed'),
+('Cancelled');
+-- End of script
+-- Script to create Type of Service and Sub-Service table
+
+-- Script to create Type of Service table
+
+CREATE TABLE ServiceType (
+    ServiceTypeId INT AUTO_INCREMENT PRIMARY KEY,
+    ServiceTypeName VARCHAR(100) NOT NULL
+);
+
+-- Script to create Sub-Service table
+
+CREATE TABLE SubService (
+    SubServiceId INT AUTO_INCREMENT PRIMARY KEY,
+    ServiceTypeId INT,
+    SubServiceName VARCHAR(100) NOT NULL,
+    FOREIGN KEY (ServiceTypeId) REFERENCES ServiceType(ServiceTypeId)
+);
+
+-- Inserting master data into Type of Service table
+INSERT INTO ServiceType (ServiceTypeName) VALUES
+('AC & Appliances Repair'),
+('House Cleaning'),
+('Vehicle Repair Service'),
+('Product Pickup & Drop Service');
+
+-- Inserting master data into Sub-Service table
+INSERT INTO SubService (ServiceTypeId, SubServiceName) VALUES
+(1, 'Air Conditioner Repair'),
+(1, 'Refrigerator Repair'),
+(2, 'Deep Cleaning'),
+(2, 'Carpet Cleaning'),
+(3, 'Car Repair'),
+(3, 'Bike Repair'),
+(4, 'Courier Service'),
+(4, 'Furniture Moving');
+
+-- End of script
+-- Script to create Amount table
+
+CREATE TABLE ServiceAmount (
+    AmountId INT AUTO_INCREMENT PRIMARY KEY,
+    SubServiceId INT,
+    Amount DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (SubServiceId) REFERENCES SubService(SubServiceId)
+);
+
+-- Inserting master data into Amount table
+INSERT INTO ServiceAmount (SubServiceId, Amount) VALUES
+(1, 1500.00),
+(2, 1200.00),
+(3, 2000.00),
+(4, 800.00),
+(5, 3000.00),
+(6, 1800.00),
+(7, 500.00),
+(8, 2500.00);
+
+-- End of script
+-- Script to create Service Booking table
+CREATE TABLE Service_Booking (
+    Service_Id INT AUTO_INCREMENT PRIMARY KEY,
+    UserId INT NOT NULL,
+    Booking_Date DATE NOT NULL,
+    Booking_Slot VARCHAR(20) NOT NULL,
+    Service_Type VARCHAR(50) NOT NULL,
+    Address VARCHAR(255) NOT NULL,
+    Amount DECIMAL(10, 2) NOT NULL,
+    Status VARCHAR(20) NOT NULL,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId)
+);
+
+-- End of script
+-- Script to insert data into Service Booking table
+-- Insert data into Service_Booking table with the correct fields, including UserId
+INSERT INTO Service_Booking (Service_Id, UserId, Booking_Date, Booking_Slot, Service_Type, Address, Amount, Status) VALUES
+(1, 1, '2024-08-12', 'Morning', 'AC Repair', '123 Elm St, Springfield', 150.00, 'Booked'),
+(2, 2, '2024-08-13', 'Afternoon', 'House Cleaning', '456 Oak St, Springfield', 80.00, 'Pending'),
+(3, 3, '2024-08-14', 'Evening', 'Vehicle Repair', '789 Pine St, Springfield', 200.00, 'Completed'),
+(4, 4, '2024-08-15', 'Morning', 'Product Pickup', '101 Maple St, Springfield', 50.00, 'Booked'),
+(5, 5, '2024-08-16', 'Afternoon', 'AC Repair', '202 Birch St, Springfield', 150.00, 'Cancelled'),
+(6, 1, '2024-08-17', 'Evening', 'House Cleaning', '303 Cedar St, Springfield', 90.00, 'Booked'),
+(7, 2, '2024-08-18', 'Morning', 'Vehicle Repair', '404 Spruce St, Springfield', 180.00, 'Completed'),
+(8, 3, '2024-08-19', 'Afternoon', 'Product Pickup', '505 Fir St, Springfield', 60.00, 'Pending'),
+(9, 4, '2024-08-20', 'Evening', 'AC Repair', '606 Elm St, Springfield', 150.00, 'Booked'),
+(10, 5, '2024-08-21', 'Morning', 'House Cleaning', '707 Oak St, Springfield', 85.00, 'Completed');
+
+
+-- End of script
+SELECT 
+    sb.Service_Id AS "Service Id",
+    sb.Booking_Date AS "Date",
+    sb.Booking_Slot AS "Slot",
+    sb.Service_Type AS "Type of Service",
+    sb.Address AS "Address",
+    sb.Amount AS "Amount",
+    sb.Status AS "Status",
+    u.UserName AS "User Name",
+    u.Email AS "Email",
+    u.ContactNumber AS "Phone No."
+FROM 
+    Service_Booking sb
+JOIN 
+    Users u ON sb.UserId = u.UserId
+ORDER BY 
+    sb.Service_Id;
+
+SELECT 
+    sb.Service_Id AS "Service Id",
+    sb.Booking_Date AS "Date",
+    sb.Booking_Slot AS "Slot",
+    sb.Service_Type AS "Type of Service",
+    sb.Address AS "Address",
+    sb.Amount AS "Amount",
+    sb.Status AS "Status",
+    u.UserName AS "User Name",
+    u.Email AS "Email",
+    u.ContactNumber AS "Phone No."
+FROM 
+    Service_Booking sb
+JOIN 
+    Users u ON sb.UserId = u.UserId
+ORDER BY 
+    sb.Booking_Date ASC,
+    FIELD(sb.Booking_Slot, 'Morning', 'Afternoon', 'Evening') ASC;
